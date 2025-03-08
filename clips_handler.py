@@ -28,6 +28,40 @@ def find_clips(json_file_path):
         return []
 
 
+def find_clips_by_collection(json_file_path, collection_id):
+    """Find clips belonging to a specific collection"""
+    try:
+        with open(json_file_path, "r") as file:
+            data = json.load(file)
+
+        matching_clips = []
+        for clip_id, clip_data in data.items():
+            # Check if the clip belongs to the specified collection
+            content = clip_data.get("Content", {})
+            collections = content.get("contentCollections", [])
+
+            # Check if any collection matches the search ID
+            if any(
+                collection.get("collectionId") == collection_id
+                for collection in collections
+            ):
+                file_path = clip_data.get("FilePath", "").strip()
+                if file_path:
+                    matching_clips.append(file_path)
+
+        return matching_clips
+
+    except FileNotFoundError:
+        print(f"Error: JSON file not found at {json_file_path}")
+        return []
+    except json.JSONDecodeError:
+        print(f"Error: Invalid JSON format in {json_file_path}")
+        return []
+    except Exception as e:
+        print(f"Unexpected error: {str(e)}")
+        return []
+
+
 def extract_clips(clips_list, target_directory):
     """Copies clips to target directory"""
     os.makedirs(target_directory, exist_ok=True)

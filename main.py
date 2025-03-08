@@ -1,11 +1,10 @@
 import os
-from clips_handler import find_clips, extract_clips
+from clips_handler import find_clips, extract_clips, find_clips_by_collection
 from downloader import download_clip
 from utils.paths import get_default_paths
 
 
 def main():
-    # Get path configuration
     paths = get_default_paths()
     default_clips_dir = paths["default_clips_dir"]
     default_json_path = paths["default_json_path"]
@@ -27,35 +26,39 @@ def main():
             or default_clips_dir
         )
 
-        # Ask about filtering
-        filter_clips = input("Filter clips by name? (y/n): ").lower().strip()
-        search_string = ""
-        if filter_clips == "y":
+        # Ask about search type
+        print("\nSearch options:")
+        print("[1] Search by clip name")
+        print("[2] Search by collection ID")
+        search_type = input(
+            "Choose search type (1/2) or press Enter to copy all: "
+        ).strip()
+
+        if search_type == "1":
             search_string = (
                 input("Enter text to search in clip names: ").strip().lower()
             )
-
-        clips = find_clips(json_path)
-
-        if clips:
-            # Apply filter if requested
+            clips = find_clips(json_path)
             if search_string:
-                filtered_clips = [
+                clips = [
                     clip
                     for clip in clips
                     if search_string in os.path.basename(clip).lower()
                 ]
-                if not filtered_clips:
-                    print(
-                        f"No clips found containing '{search_string}' in their names."
-                    )
-                    return
-                clips = filtered_clips
-
-            extract_clips(clips, os.path.abspath(target_dir))
+        elif search_type == "2":
+            collection_id = input("Enter collection ID to search for: ").strip()
+            if collection_id:
+                clips = find_clips_by_collection(json_path, collection_id)
+            else:
+                clips = find_clips(json_path)
         else:
-            print("No valid clips found in the JSON file.")
+            clips = find_clips(json_path)
 
+        if not clips:
+            print("No matching clips found.")
+            return
+
+        extract_clips(clips, os.path.abspath(target_dir))
     elif choice == "2":
         url = input("Enter Medal.tv clip URL: ").strip()
         target_dir = (
