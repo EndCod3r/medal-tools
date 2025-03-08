@@ -1,6 +1,6 @@
 # Medal.TV Tools
 
-I already used these because it was way easier to copy files that were in a custom album
+I made a very simple PowerShell script that did served this same purpose but everything was hard coded into the script and I needed the ability to copy all of my clips to a different directory for ease of access for my [YouTube videos](https://youtube.com/@EndLordHD)! So I decided to re-write it in Python (with the help of AI) and it now works way better!
 
 Functions:
 
