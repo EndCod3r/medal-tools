@@ -8,6 +8,7 @@ I made a very simple PowerShell script that did served this same purpose but eve
   - Copying clips with certain string in path (eg. Game name, date, etc)
   - Copying clips by collectionID (custom albums)
 - Download clips from Medal.TV
+- Fully functional GUI
 
 ### Planned:
 
