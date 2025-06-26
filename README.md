@@ -11,7 +11,6 @@ I made a very simple PowerShell script that did served this same purpose but eve
 
 ### Planned:
 
-- GUI
 - Copying clips by tags
 - Copying clips by game category
 
