@@ -12,10 +12,12 @@ I made a very simple PowerShell script that did served this same purpose but eve
 ## Functions:
 
 - Functional CLI (minimal bugs but less features)
+
   - Copy clips to directory
     - Copying clips with certain string in path (eg. Game name, date, etc)
     - Copying clips from custom albums (collectionId or collection name)
-- Download clips from Medal.TV
+  - Download clips from Medal.TV
+  - Supports arguments for one-line copying or downloading
 
 - Mostly functional GUI (some bugs but more features)
   - Searching for clips
@@ -59,8 +61,6 @@ pip install -r requirements.txt
 ```
 
 Finally run `python cli.py` for the CLI or `python gui.py` for a GUI.
-
-
 
 ### Collection IDs:
 
