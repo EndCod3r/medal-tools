@@ -8,7 +8,7 @@ from PIL import Image, ImageTk
 import requests
 from io import BytesIO
 import threading
-from clips_handler import (
+from utils.clips_handler import (
     find_clips,
     find_clips_by_collection_id,
     find_clips_by_collection_name,

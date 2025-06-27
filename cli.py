@@ -1,7 +1,7 @@
 import argparse
 import os
 import sys
-from clips_handler import (
+from utils.clips_handler import (
     find_clips,
     extract_clips,
     find_clips_by_collection_id,
