@@ -4,11 +4,13 @@ I made a very simple PowerShell script that did served this same purpose but eve
 
 ## Functions:
 
-- Copy clips to directory
-  - Copying clips with certain string in path (eg. Game name, date, etc)
-  - Copying clips by collectionID (custom albums)
+- Functional CLI (minimal bugs but less features)
+  - Copy clips to directory
+    - Copying clips with certain string in path (eg. Game name, date, etc)
+    - Copying clips from custom albums (collectionId or collection name)
 - Download clips from Medal.TV
-- Fully function GUI
+
+- Mostly functional GUI (some bugs but more features)
   - Searching for clips
     - by text in path
     - by text in title
