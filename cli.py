@@ -3,6 +3,7 @@ from clips_handler import (
     find_clips,
     extract_clips,
     find_clips_by_collection_id,
+    find_clips_by_collection_name,
     find_clips_by_title,
 )
 from downloader import download_clip
@@ -34,8 +35,8 @@ def main():
         # Ask about search type
         print("\nSearch options:")
         print("[1] Search by clip path text")
-        print("[2] Search by collection ID")
-        print("[3] Search by clip name (contentTitle)")
+        print("[2] Search by clip name (contentTitle)")
+        print("[3] Search by collection")
         print("[Enter] Copy all clips without search")
         search_type = input(
             "Choose search type (1-3) or press Enter to copy all: "
@@ -51,14 +52,23 @@ def main():
                     if search_string in os.path.basename(clip).lower()
                 ]
         elif search_type == "2":
-            collection_id = input("Enter collection ID to search for: ").strip()
-            if collection_id:
-                clips = find_clips_by_collection_id(json_path, collection_id)
-            else:
-                clips = find_clips(json_path)
-        elif search_type == "3":
             search_string = input("Enter clip name to search for: ").strip().lower()
             clips = find_clips_by_title(json_path, search_string)
+        elif search_type == "3":
+            print("\nEnter collection type:")
+            print("[1] Search by collection ID")
+            print("[2] Search by collection name")
+            collection_choice = input("Choose option (1/2): ").strip()
+
+            if collection_choice == "1":
+                collection_id = input("Enter collection ID to search for: ").strip()
+                if collection_id:
+                    clips = find_clips_by_collection_id(json_path, collection_id)
+            elif collection_choice == "2":
+                collection_name = (
+                    input("Enter collection name to search for: ").strip().lower()
+                )
+                clips = find_clips_by_collection_name(json_path, collection_name)
         else:
             clips = find_clips(json_path)
 
