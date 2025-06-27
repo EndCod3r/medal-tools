@@ -6,6 +6,8 @@ I made a very simple PowerShell script that did served this same purpose but eve
 
 ![CLI](https://github.com/user-attachments/assets/aae1c9a2-06b0-4f9a-8eef-3eb3cb2323a6)
 
+> [!WARNING]  
+> Make sure you close/restart Medal before copying clips so that the JSON file is saved properly and the script doesn't miss any clips!
 
 ## Functions:
 
@@ -57,6 +59,8 @@ pip install -r requirements.txt
 ```
 
 Finally run `python cli.py` for the CLI or `python gui.py` for a GUI.
+
+
 
 ### Collection IDs:
 
