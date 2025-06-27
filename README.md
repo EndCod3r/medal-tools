@@ -8,16 +8,52 @@ I made a very simple PowerShell script that did served this same purpose but eve
   - Copying clips with certain string in path (eg. Game name, date, etc)
   - Copying clips by collectionID (custom albums)
 - Download clips from Medal.TV
+- Fully function GUI
+  - Searching for clips
+    - by text in path
+    - by text in title
+    - by collection name/ID
+  - Copying clips
+    - by text in path
+    - by text in title
+    - by collection name/ID
+  - Checking for enough disk space to copy clips
 
 ### Planned:
 
-- GUI
-- Copying clips by tags
-- Copying clips by game category
+- Copying and seraching clips by tags and game category
+- Downloading clips through the GUI
 
-### Collection IDs
+## How to download:
 
-If you want to copy clips that are in a custom album you need the collectionId for that album.
+### Git Clone:
+
+```
+git clone https://github.com/EndCod3r/medal-tools.git
+cd medal-tools
+```
+
+or if you don't have [Git](https://git-scm.com) installed
+
+### Download Zip:
+
+Look for and click the green `<> Code` button near the top of this repo's page and click `Download ZIP`, and once it's done unzip the archive.
+
+## How to use:
+
+Make sure you have [Python](https://www.python.org/downloads/) installed and make sure to select Add Python to PATH while installing.
+
+Open a terminal in the medal-tools folder and run
+
+```
+pip install -r requirements.txt
+```
+
+Finally run `python cli.py` for the CLI or `python gui.py` for a GUI.
+
+### Collection IDs:
+
+If you want to copy clips that are in a specific custom album you need the collectionId for that album.
 
 To find it you need to go into your clips.json file.
 
@@ -28,7 +64,7 @@ Use `CTRL + F` and type the name of the album you want and before the name of th
 Example:
 
 ```
-[{"collectionId":"1d0oPu5MFZv2xJGaFjS","name":"Funny Siege Clips"...
+[{"collectionId":"1d0oPu5MFZv2xJGaFjS","name":"Funny Siege Clips"...}]
 ```
 
 ### Downloading Clips
