@@ -11,7 +11,7 @@ def download_clip(url, output_dir):
         "--progress",
         "--newline",
         "-o",
-        os.path.join(output_dir, "%(title)s.%(ext)s"),
+        os.path.join(output_dir, "[%(id)s] %(title)s.%(ext)s"),
     ]
 
     if not os.path.isfile(downloader_exe):
