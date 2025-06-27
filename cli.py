@@ -8,7 +8,7 @@ from utils.clips_handler import (
     find_clips_by_collection_name,
     find_clips_by_title,
 )
-from downloader import download_clip
+from utils.downloader import download_clip
 from utils.paths import get_default_paths
 
 
