@@ -2,13 +2,22 @@
 
 I made a very simple PowerShell script that did served this same purpose but everything was hard coded into the script but I needed the ability to copy all of my clips to a different directory for ease of access for my [YouTube videos](https://youtube.com/@EndLordHD). So I decided to re-write it in Python (with the help of AI) and it now works way better!
 
+![GUI](https://github.com/user-attachments/assets/04c911c2-0cc3-4ff5-9c7c-2272afeb0d30)
+
+![CLI](https://github.com/user-attachments/assets/aae1c9a2-06b0-4f9a-8eef-3eb3cb2323a6)
+
+> [!WARNING]  
+> Make sure you close/restart Medal before copying clips so that the JSON file is saved properly and the script doesn't miss any clips!
+
 ## Functions:
 
-- Copy clips to directory
-  - Copying clips with certain string in path (eg. Game name, date, etc)
-  - Copying clips by collectionID (custom albums)
+- Functional CLI (minimal bugs but less features)
+  - Copy clips to directory
+    - Copying clips with certain string in path (eg. Game name, date, etc)
+    - Copying clips from custom albums (collectionId or collection name)
 - Download clips from Medal.TV
-- Fully function GUI
+
+- Mostly functional GUI (some bugs but more features)
   - Searching for clips
     - by text in path
     - by text in title
@@ -50,6 +59,8 @@ pip install -r requirements.txt
 ```
 
 Finally run `python cli.py` for the CLI or `python gui.py` for a GUI.
+
+
 
 ### Collection IDs:
 
