@@ -8,7 +8,13 @@ from PIL import Image, ImageTk
 import requests
 from io import BytesIO
 import threading
-from clips_handler import find_clips, find_clips_by_collection
+from clips_handler import (
+    find_clips,
+    find_clips_by_collection_id,
+    find_clips_by_collection_name,
+    find_clips_by_path_text,
+    find_clips_by_title,
+)
 from utils.paths import get_default_paths
 import shutil
 import tkinter as tk
@@ -64,6 +70,7 @@ loaded_clips = []
 root = ctk.CTk()
 root.title("MedalTV Clip Tool")
 root.geometry("1000x650")
+root.iconbitmap("assets/icon.ico")
 
 # PanedWindow for two columns
 paned = tk.PanedWindow(
@@ -139,14 +146,18 @@ CTkTooltip(json_icon_button, "Browse for JSON")
 
 # Search type dropdown
 search_type_var = ctk.StringVar(value="Search Text in Path")
+title_text_var = ctk.StringVar()
 
-# Search type dropdown
-search_type_var = ctk.StringVar(value="Search Text in Path")
 
 ctk.CTkLabel(left_frame, text="Select Search Type:").pack(pady=(20, 5))
 search_type_menu = ctk.CTkOptionMenu(
     left_frame,
-    values=["Search Text in Path", "Collection Name", "Collection ID"],
+    values=[
+        "Search Text in Path",
+        "Search Text in Title",
+        "Collection Name",
+        "Collection ID",
+    ],
     variable=search_type_var,
 )
 search_type_menu.pack(pady=(0, 10))
@@ -159,9 +170,14 @@ input_container.pack(pady=2)
 path_text_var = ctk.StringVar()
 collection_name_var = ctk.StringVar()
 collection_id_var = ctk.StringVar()
+title_text_var = ctk.StringVar()
+
+
+title_label = ctk.CTkLabel(input_container, text="Search Text In Title:")
+title_entry = ctk.CTkEntry(input_container, width=200, textvariable=title_text_var)
 
 # Widgets for Search Text in Path
-path_label = ctk.CTkLabel(input_container, text="Search Text (in path/title):")
+path_label = ctk.CTkLabel(input_container, text="Search Text In Path:")
 path_entry = ctk.CTkEntry(input_container, width=200, textvariable=path_text_var)
 
 # Widgets for Collection Name
@@ -184,19 +200,28 @@ collection_entry.pack_forget()
 
 
 def on_search_type_change(choice):
-    # Remove all widgets from container
-    for widget in input_container.winfo_children():
-        widget.pack_forget()
+    # Hide all input widgets first
+    path_label.pack_forget()
+    path_entry.pack_forget()
+    title_label.pack_forget()
+    title_entry.pack_forget()
+    collection_name_label.pack_forget()
+    collection_name_entry.pack_forget()
+    collection_id_label.pack_forget()
+    collection_entry.pack_forget()
 
     if choice == "Search Text in Path":
-        path_label.pack(anchor="w")
-        path_entry.pack(pady=2)
+        path_label.pack(pady=(10, 0))
+        path_entry.pack(pady=(0, 10))
+    elif choice == "Search Text in Title":
+        title_label.pack(pady=(10, 0))
+        title_entry.pack(pady=(0, 10))
     elif choice == "Collection Name":
-        collection_name_label.pack(anchor="w")
-        collection_name_entry.pack(pady=2)
+        collection_name_label.pack(pady=(10, 0))
+        collection_name_entry.pack(pady=(0, 10))
     elif choice == "Collection ID":
-        collection_id_label.pack(anchor="w")
-        collection_entry.pack(pady=2)
+        collection_id_label.pack(pady=(10, 0))
+        collection_entry.pack(pady=(0, 10))
 
 
 search_type_var.trace_add(
@@ -375,39 +400,20 @@ def get_filtered_clips():
 
     if search_type == "Search Text in Path":
         filter_text = path_text_var.get().strip().lower()
+        return find_clips_by_path_text(json_path, filter_text)
+    elif search_type == "Search Text in Title":
+        filter_text = (
+            title_text_var.get().strip().lower()
+        )  # Add a separate input field for title search
+        return find_clips_by_title(json_path, filter_text)
     elif search_type == "Collection Name":
         filter_text = collection_name_var.get().strip().lower()
+        return find_clips_by_collection_name(json_path, filter_text)
     elif search_type == "Collection ID":
         filter_text = collection_id_var.get().strip()
+        return find_clips_by_collection_id(json_path, filter_text)
 
-    try:
-        with open(json_path, "r") as file:
-            data = json.load(file)
-    except Exception as e:
-        messagebox.showerror("Error", f"Failed to load JSON file: {e}")
-        return []
-
-    clips = find_clips(json_path)
-
-    if search_type == "Collection ID":
-        clips = find_clips_by_collection(json_path, filter_text)
-    elif search_type == "Collection Name":
-        filtered = []
-        for clip_path in clips:
-            clip_obj = next(
-                (v for v in data.values() if v.get("FilePath") == clip_path), None
-            )
-            if clip_obj:
-                collections = clip_obj.get("Content", {}).get("contentCollections", [])
-                names = [c.get("name", "").lower() for c in collections]
-                if any(filter_text in name for name in names):
-                    filtered.append(clip_path)
-        clips = filtered
-    else:  # Search Text in Path
-        if filter_text:
-            clips = [c for c in clips if filter_text in os.path.basename(c).lower()]
-
-    return clips
+    return []
 
 
 # Check Disk Space button
@@ -627,16 +633,6 @@ def load_clips():
     cancel_requested = False  # Reset at the start
 
     json_path = json_path_entry.get().strip()
-    search_type = search_type_var.get()
-    filter_text = ""
-
-    if search_type == "Search Text in Path":
-        filter_text = path_text_var.get().strip().lower()
-    elif search_type == "Collection Name":
-        filter_text = collection_name_var.get().strip().lower()
-    elif search_type == "Collection ID":
-        filter_text = collection_id_var.get().strip()
-
     if not os.path.exists(json_path):
         messagebox.showerror("Error", "JSON file not found.")
         return
@@ -650,68 +646,39 @@ def load_clips():
 
     clear_clips()
 
-    clips = []
     try:
         with open(json_path, "r") as file:
             data = json.load(file)
 
-        if search_type == "Collection ID":
-            clips = find_clips_by_collection(json_path, filter_text)
-        elif search_type == "Collection Name":
-            clips = find_clips(json_path)
-            if filter_text:
-                filtered = []
-                for clip_path in clips:
-                    clip_obj = next(
-                        (v for v in data.values() if v.get("FilePath") == clip_path),
-                        None,
-                    )
-                    if clip_obj:
-                        collections = clip_obj.get("Content", {}).get(
-                            "contentCollections", []
-                        )
-                        names = [c.get("name", "").lower() for c in collections]
-                        if any(filter_text in name for name in names):
-                            filtered.append(clip_path)
-                clips = filtered
-        else:  # Search Text in Path
-            clips = find_clips(json_path)
-            if filter_text:
-                clips = [c for c in clips if filter_text in os.path.basename(c).lower()]
+        clips = get_filtered_clips()
+
+        if cancel_requested:
+            enable_inputs()
+            hide_loading()
+            return
+
+        if not clips:
+            messagebox.showinfo("No Clips", "No matching clips found.")
+            enable_inputs()
+            hide_loading()
+            return
+
+        loaded_clips = clips
+        copy_btn.configure(state="normal")
+
+        for clip_path in loaded_clips:
+            if cancel_requested:
+                break
+            create_clip_row(clip_path, data)
+
+        if not cancel_requested:
+            clip_count_var.set(f"Clips: {len(loaded_clips)}")
 
     except Exception as e:
         messagebox.showerror("Error", f"Failed to load clips: {e}")
+    finally:
         enable_inputs()
         hide_loading()
-        return
-
-    if cancel_requested:
-        enable_inputs()
-        hide_loading()
-        return
-
-    if not clips:
-        messagebox.showinfo("No Clips", "No matching clips found.")
-        enable_inputs()
-        hide_loading()
-        return
-
-    loaded_clips = clips
-    copy_btn.configure(state="normal")
-
-    for clip_path in loaded_clips:
-        if cancel_requested:
-            break
-        create_clip_row(clip_path, data)
-
-    enable_inputs()
-    hide_loading()
-
-    if not cancel_requested:
-        clip_count_var.set(f"Clips: {len(loaded_clips)}")
-
-    # Re-enable search inputs
-    search_type_menu.configure(state="normal")
 
 
 def create_clip_row(clip_path, data):
@@ -857,48 +824,15 @@ def copy_clips_with_progress():
         messagebox.showerror("Error", "JSON file not found.")
         return
 
-    try:
-        with open(json_path, "r") as file:
-            data = json.load(file)
-    except Exception as e:
-        messagebox.showerror("Error", f"Failed to load JSON file: {e}")
-        return
-
-    search_type = search_type_var.get()
-    filter_text = ""
-    if search_type == "Search Text in Path":
-        filter_text = path_text_var.get().strip().lower()
-    elif search_type == "Collection Name":
-        filter_text = collection_name_var.get().strip().lower()
-    elif search_type == "Collection ID":
-        filter_text = collection_id_var.get().strip()
-
-    matching_paths = []
-    for v in data.values():
-        file_path = v.get("FilePath")
-        if not file_path:
-            continue
-        if search_type == "Search Text in Path":
-            if filter_text in os.path.basename(file_path).lower():
-                matching_paths.append(file_path)
-        elif search_type == "Collection Name":
-            collections = v.get("Content", {}).get("contentCollections", [])
-            names = [c.get("name", "").lower() for c in collections]
-            if any(filter_text in name for name in names):
-                matching_paths.append(file_path)
-        elif search_type == "Collection ID":
-            collections = v.get("Content", {}).get("contentCollections", [])
-            ids = [c.get("collectionId", "") for c in collections]
-            if filter_text in ids:
-                matching_paths.append(file_path)
-
-    if not matching_paths:
+    # Determine which clips to copy
+    clips = get_filtered_clips()
+    if not clips:
         messagebox.showinfo("No Clips", "No matching clips found to copy.")
         return
 
     os.makedirs(target_dir, exist_ok=True)
 
-    total = len(matching_paths)
+    total = len(clips)
     copied, skipped, missing = 0, 0, 0
 
     def update_progress(text, progress):
@@ -906,20 +840,21 @@ def copy_clips_with_progress():
         progress_bar.set(progress)
 
     root.after(0, lambda: show_loading("Copying clips..."))
-    for idx, clip_path in enumerate(matching_paths):
+    for idx, clip_path in enumerate(clips):
         if not clip_path or not os.path.exists(clip_path):
             missing += 1
-            continue
-        file_name = os.path.basename(clip_path)
-        dest = os.path.join(target_dir, file_name)
-        if os.path.exists(dest):
-            skipped += 1
         else:
-            try:
-                shutil.copy2(clip_path, dest)
-                copied += 1
-            except Exception as e:
-                print(f"Failed to copy {file_name}: {e}")
+            file_name = os.path.basename(clip_path)
+            dest = os.path.join(target_dir, file_name)
+            if os.path.exists(dest):
+                skipped += 1
+            else:
+                try:
+                    shutil.copy2(clip_path, dest)
+                    copied += 1
+                except Exception as e:
+                    print(f"Failed to copy {file_name}: {e}")
+
         progress_text = f"Copying {idx + 1}/{total}..."
         root.after(0, update_progress, progress_text, (idx + 1) / total)
 

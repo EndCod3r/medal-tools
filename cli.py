@@ -1,5 +1,10 @@
 import os
-from clips_handler import find_clips, extract_clips, find_clips_by_collection
+from clips_handler import (
+    find_clips,
+    extract_clips,
+    find_clips_by_collection_id,
+    find_clips_by_title,
+)
 from downloader import download_clip
 from utils.paths import get_default_paths
 
@@ -28,16 +33,16 @@ def main():
 
         # Ask about search type
         print("\nSearch options:")
-        print("[1] Search by clip name")
+        print("[1] Search by clip path text")
         print("[2] Search by collection ID")
+        print("[3] Search by clip name (contentTitle)")
+        print("[Enter] Copy all clips without search")
         search_type = input(
-            "Choose search type (1/2) or press Enter to copy all: "
+            "Choose search type (1-3) or press Enter to copy all: "
         ).strip()
 
         if search_type == "1":
-            search_string = (
-                input("Enter text to search in clip names: ").strip().lower()
-            )
+            search_string = input("Enter text to search in clip path: ").strip().lower()
             clips = find_clips(json_path)
             if search_string:
                 clips = [
@@ -48,9 +53,12 @@ def main():
         elif search_type == "2":
             collection_id = input("Enter collection ID to search for: ").strip()
             if collection_id:
-                clips = find_clips_by_collection(json_path, collection_id)
+                clips = find_clips_by_collection_id(json_path, collection_id)
             else:
                 clips = find_clips(json_path)
+        elif search_type == "3":
+            search_string = input("Enter clip name to search for: ").strip().lower()
+            clips = find_clips_by_title(json_path, search_string)
         else:
             clips = find_clips(json_path)
 

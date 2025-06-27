@@ -28,19 +28,17 @@ def find_clips(json_file_path):
         return []
 
 
-def find_clips_by_collection(json_file_path, collection_id):
-    """Find clips belonging to a specific collection"""
+def find_clips_by_collection_id(json_file_path, collection_id):
+    """Find clips belonging to a specific collection ID"""
     try:
         with open(json_file_path, "r") as file:
             data = json.load(file)
 
         matching_clips = []
         for clip_id, clip_data in data.items():
-            # Check if the clip belongs to the specified collection
             content = clip_data.get("Content", {})
             collections = content.get("contentCollections", [])
 
-            # Check if any collection matches the search ID
             if any(
                 collection.get("collectionId") == collection_id
                 for collection in collections
@@ -59,6 +57,67 @@ def find_clips_by_collection(json_file_path, collection_id):
         return []
     except Exception as e:
         print(f"Unexpected error: {str(e)}")
+        return []
+
+
+def find_clips_by_collection_name(json_file_path, collection_name):
+    """Find clips by collection name (case-insensitive substring match)"""
+    try:
+        with open(json_file_path, "r") as file:
+            data = json.load(file)
+
+        matching_clips = []
+        collection_name = collection_name.lower()
+
+        for clip_id, clip_data in data.items():
+            content = clip_data.get("Content", {})
+            collections = content.get("contentCollections", [])
+            names = [c.get("name", "").lower() for c in collections]
+            if any(collection_name in name for name in names):
+                file_path = clip_data.get("FilePath", "").strip()
+                if file_path:
+                    matching_clips.append(file_path)
+
+        return matching_clips
+
+    except FileNotFoundError:
+        print(f"Error: JSON file not found at {json_file_path}")
+        return []
+    except json.JSONDecodeError:
+        print(f"Error: Invalid JSON format in {json_file_path}")
+        return []
+    except Exception as e:
+        print(f"Unexpected error: {str(e)}")
+        return []
+
+
+def find_clips_by_path_text(json_file_path, search_string):
+    """Find clips by search string in file path"""
+    all_clips = find_clips(json_file_path)
+    search_string = search_string.lower()
+    return [
+        clip for clip in all_clips if search_string in os.path.basename(clip).lower()
+    ]
+
+
+def find_clips_by_title(json_file_path, search_string):
+    """Find clips by search string in clip title (contentTitle)"""
+    search_string = search_string.lower()
+    try:
+        with open(json_file_path, "r") as file:
+            data = json.load(file)
+
+        matching_clips = []
+        for clip_data in data.values():
+            content_title = clip_data.get("Content", {}).get("contentTitle", "").lower()
+            if search_string in content_title:
+                file_path = clip_data.get("FilePath", "").strip()
+                if file_path:
+                    matching_clips.append(file_path)
+
+        return matching_clips
+    except Exception as e:
+        print(f"Error in find_clips_by_title: {e}")
         return []
 
 
