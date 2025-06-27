@@ -13,26 +13,26 @@ I made a very simple PowerShell script that did served this same purpose but eve
 
 - Functional CLI (minimal bugs but less features)
 
-  - Copy clips to directory
-    - Copying clips with certain string in path (eg. Game name, date, etc)
+  - Copy clips to a directory
+    - Copying clips with a certain string in the path (eg. game name, date, etc)
     - Copying clips from custom albums (collectionId or collection name)
   - Download clips from Medal.TV
   - Supports arguments for one-line copying or downloading
 
 - Mostly functional GUI (some bugs but more features)
   - Searching for clips
-    - by text in path
-    - by text in title
+    - by text in the path
+    - by text in the title
     - by collection name/ID
   - Copying clips
-    - by text in path
-    - by text in title
+    - by text in the path
+    - by text in the title
     - by collection name/ID
   - Checking for enough disk space to copy clips
 
 ### Planned:
 
-- Copying and seraching clips by tags and game category
+- Copying and searching clips by tags and game category
 - Downloading clips through the GUI
 
 ## How to download:
@@ -48,11 +48,11 @@ or if you don't have [Git](https://git-scm.com) installed
 
 ### Download Zip:
 
-Go to the [release page](https://github.com/EndCod3r/medal-tools/releases/latest) and open the assets drop down and download the `Source code (zip)` and extract that once it's done.
+Go to the [releases](https://github.com/EndCod3r/medal-tools/releases/latest), and open the Assets drop down, and download the `Source code (zip).` Extract it once it's done.
 
 ## How to use:
 
-Make sure you have [Python](https://www.python.org/downloads/) installed and make sure to select Add Python to PATH while installing.
+Ensure you have [Python](https://www.python.org/downloads/) installed and select 'Add Python to PATH' during the installation process.
 
 Open a terminal in the medal-tools folder and run
 
@@ -60,7 +60,7 @@ Open a terminal in the medal-tools folder and run
 pip install -r requirements.txt
 ```
 
-Finally run `python cli.py` for the CLI or `python gui.py` for a GUI.
+Finally, run `python cli.py` for the CLI or `python gui.py` for a GUI.
 
 ### Collection IDs:
 
@@ -80,6 +80,6 @@ Example:
 
 ### Downloading Clips
 
-This function requires [yt-dlp](https://github.com/yt-dlp/yt-dlp). Download yt-dlp.exe file from the release page and put it in the same directory as `main.py` or else it will give you an error and wont work. You can download videos from other websites too (eg. YouTube, TikTok, etc.) but for more options when downloading videos you should use [ThioJoe's](https://youtube.com/@ThioJoe) [youtube-dl-easy](https://github.com/ThioJoe/youtube-dl-easy).
+This function requires [yt-dlp](https://github.com/yt-dlp/yt-dlp). Download yt-dlp.exe file from the releases page and put it in the same directory as `main.py` or else it will give you an error and won't work. You can download videos from other websites too (eg. YouTube, TikTok, etc.) but for more options when downloading videos you should use [ThioJoe's](https://youtube.com/@ThioJoe) [youtube-dl-easy](https://github.com/ThioJoe/youtube-dl-easy).
 
 The download clip function is heavily inspired by [ThioJoe's](https://youtube.com/@ThioJoe) [youtube-dl-easy](https://github.com/ThioJoe/youtube-dl-easy).
