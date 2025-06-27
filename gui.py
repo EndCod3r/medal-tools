@@ -70,6 +70,7 @@ loaded_clips = []
 root = ctk.CTk()
 root.title("MedalTV Clip Tool")
 root.geometry("1000x650")
+root.iconbitmap("assets/icon.ico")
 
 # PanedWindow for two columns
 paned = tk.PanedWindow(
