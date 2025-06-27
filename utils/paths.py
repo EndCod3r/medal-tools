@@ -13,4 +13,7 @@ def get_default_paths():
         "default_json_path": os.path.join(
             os.environ.get("APPDATA", ""), "Medal", "store", "clips.json"
         ),
+        "default_config_path": os.path.join(
+            os.environ.get("APPDATA", ""), "Medal", "store", "settings.json"
+        ),
     }
