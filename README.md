@@ -48,7 +48,7 @@ or if you don't have [Git](https://git-scm.com) installed
 
 ### Download Zip:
 
-Look for and click the green `<> Code` button near the top of this repo's page and click `Download ZIP`, and once it's done unzip the archive.
+Go to the [release page](https://github.com/EndCod3r/medal-tools/releases/latest) and open the assets drop down and download the `Source code (zip)` and extract that once it's done.
 
 ## How to use:
 
