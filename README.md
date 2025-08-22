@@ -1,5 +1,8 @@
 # Medal.TV Tools
 
+> [!WARNING]  
+> # This project is abondanded to be re-written in Go! [medal-toolbox](https://github.com/EndCod3r/medal-toolbox)
+
 I made a very simple PowerShell script that did served this same purpose but everything was hard coded into the script but I needed the ability to copy all of my clips to a different directory for ease of access for my [YouTube videos](https://youtube.com/@EndLordHD). So I decided to re-write it in Python (with the help of AI) and it now works way better!
 
 ![GUI](https://github.com/user-attachments/assets/04c911c2-0cc3-4ff5-9c7c-2272afeb0d30)
